@@ -1,0 +1,36 @@
+{
+  "_comment": "Gesture -> transport map. Tune with detector/calibrate.py. A gesture fires its osc address when its blendshape stays >= threshold for hold_ms, then must drop below release before it can fire again; cooldown_ms blocks re-fire. global_lockout_ms suppresses other gestures briefly after any fire. Higher threshold/hold = less sensitive. Available channels include head pose (lookUp/lookDown/turnLeft/turnRight, tiltLeft/tiltRight) and face (browInnerUp, jawOpen, smile, browUpLeft/Right, winkLeft/Right).",
+  "settings": {
+    "global_lockout_ms": 500,
+    "single_active": true
+  },
+  "gestures": [
+    {
+      "name": "play_stop",
+      "blendshape": "browInnerUp",
+      "threshold": 0.72,
+      "release": 0.40,
+      "hold_ms": 600,
+      "cooldown_ms": 1200,
+      "osc": "/transport/playstop"
+    },
+    {
+      "name": "recordarm",
+      "blendshape": "tiltRight",
+      "threshold": 0.80,
+      "release": 0.45,
+      "hold_ms": 600,
+      "cooldown_ms": 1500,
+      "osc": "/transport/recordarm"
+    },
+    {
+      "name": "undo",
+      "blendshape": "tiltLeft",
+      "threshold": 0.80,
+      "release": 0.45,
+      "hold_ms": 600,
+      "cooldown_ms": 1500,
+      "osc": "/transport/undo"
+    }
+  ]
+}

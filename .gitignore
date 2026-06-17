@@ -1,0 +1,17 @@
+# Python
+detector/.venv/
+__pycache__/
+*.pyc
+.python-version
+
+# Models (downloaded, not committed)
+models/*.task
+
+# macOS
+.DS_Store
+
+# Max
+*.maxsnapshot
+
+# user-specific camera choice
+detector/settings.json

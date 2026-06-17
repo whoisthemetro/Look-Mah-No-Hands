@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Convenience launcher for the main detector.
+#   ./detect              # run with OSC output
+#   ./detect --no-osc     # dry run, no OSC sent
+#   ./detect --no-show    # headless
+cd "$(dirname "$0")" || exit 1
+exec detector/.venv/bin/python detector/detect.py "$@"

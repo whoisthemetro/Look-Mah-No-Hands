@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Convenience launcher for the blendshape probe.
+#   ./probe                       # default shape (browInnerUp)
+#   ./probe --shape jawOpen       # any probe_blendshape.py args
+cd "$(dirname "$0")" || exit 1
+exec detector/.venv/bin/python detector/probe_blendshape.py "$@"

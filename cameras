@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Convenience launcher: scan camera indices and save snapshots to /tmp/cam_<i>.jpg
+cd "$(dirname "$0")" || exit 1
+exec detector/.venv/bin/python detector/list_cameras.py "$@"
