@@ -184,17 +184,48 @@ Done: detector + classifier + transport device working in Live; final gesture se
 new single-device architecture's Python side (camera list/select/live-switch).
 
 Remaining:
-1. **Device `jsui` face-mesh + meters overlay** — draw landmark dots from
-   `/status/landmarks` + meters from `/status/meters` + face LED. Build as a
-   standalone test patch first; syntax-check the JS; user verifies in Max.
-2. **Device `umenu` camera dropdown** — populate from `/camera/list`; on select,
-   `udpsend /camera/select <position>` to Python:7500; refresh sends
-   `/camera/refresh`. Python already handles mapping + live switch.
-3. **Combine into ONE device** — udpreceive 7400 → route transport(js)+status+
-   camera list; udpsend 7500. Assembly rules: copy in PATCHING view (cords!),
-   clear device fully first, save the `.amxd` next to `transport.js`.
-4. **Verify/fix `undo`** — Max Console once showed a `SendMessage … 'undo'` error;
-   confirm undo works after the clean rebuild, fix the LiveAPI call if not.
+1. ✅ **Device `jsui` face-mesh + meters overlay** — DONE, verified in Max
+   (2026-06-17). `device/face_overlay.js` draws landmark dots from
+   `/status/landmarks`, a per-gesture meter (value bar + threshold tick + hold-
+   progress underline + state colors) from `/status/gesture`, and a face LED from
+   `/status/face`. Standalone test patch: `device/face_overlay_test.maxpat` (lives
+   in `device/` so the `jsui` resolves the script; that's also its final home next
+   to the `.amxd`). Gotcha logged: `mgraphics.get_size()` is absent in this Max
+   build — read size from `this.box.rect` instead. No raw video by design (Python
+   owns the camera; the device shows the mesh viz).
+2. ✅ **Device `umenu` camera dropdown** — DONE (patch built; Live test pending).
+   `device/camera_picker_test.maxpat`: `/camera/list` → `t l b` (bang clears the
+   umenu, list goes through `iter` → `prepend append` so each label becomes its
+   own menu row — `umenu append <list>` would otherwise concat all labels into a
+   single row), pick → `prepend /camera/select` → `udpsend 127.0.0.1 7500`;
+   loadbang + Refresh button send `/camera/refresh 1`. Python fix: `detect.py` now
+   sends `/camera/list` **only on the `resend` flag** (startup + `/camera/refresh`),
+   not every 2s — the old periodic resend would clear+rebuild the umenu every tick
+   and reset the user's visible pick. The device requests the list on load, so the
+   periodic crutch wasn't needed.
+3. ✅ **Combine into ONE device** — DONE (patch built; Live assembly + test
+   pending). `device/LookMahNoHands.maxpat`: `udpreceive 7400` → one `route` over
+   all transport + status + `/camera/list` addresses; transport → message boxes →
+   `js transport.js`; status → `prepend` → `jsui face_overlay.js`; camera list →
+   umenu → `udpsend 7500`; `midiin→midiout` passthrough. JSON + wiring validated
+   (route outlet count, every patchline endpoint). Must be saved as `.amxd` next to
+   `transport.js` + `face_overlay.js`. Assembly rules unchanged: copy in PATCHING
+   view (cords!), clear the device fully first. README rewritten for this device +
+   the final gesture set.
+4. ✅ **Fix `undo` crash** — undo crashed Live every time (other actions fine).
+   - First attempt (`deferlow` before `js transport.js`): fixed the thread but undo
+     STILL crashed. Real crash stack is inside `js.mxo`
+     (`js_calljsfun → object_error → postrow_new`): the undo call raises an error
+     and Max crashes posting it — the JS engine itself is in the failing path.
+   - Real fix: **drive `undo` with native Max objects, no JS.** `loadbang →
+     live.path live_set → (id) → live.object`; the undo gesture sends `call undo`
+     (via its own `deferlow`) to that `live.object`. `js.mxo` is out of the undo
+     path entirely. play/stop/return/recordarm still go through `deferlow → js`.
+   - Applied directly into BOTH `device/LookMahNoHands.maxpat` and the binary
+     `device/LookMahNoHands.amxd` (patcher chunk surgically repacked, M4L wrapper
+     preserved; backup at `LookMahNoHands.amxd.bak`). Documented in README.
+   - **Pending user:** reload the device in Live (delete + re-drag the `.amxd` so it
+     loads fresh from disk) and confirm undo no longer crashes.
 5. **Bundle detector as a one-click macOS app** (PyInstaller/py2app) — no Python
    install for testers; later code-sign + notarize. Picker = the app's front screen.
 

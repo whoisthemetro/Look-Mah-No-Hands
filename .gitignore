@@ -12,6 +12,10 @@ models/*.task
 
 # Max
 *.maxsnapshot
+*.amxd.bak
+
+# superseded scratch device (early jsui+umenu experiment)
+device/Gestures.amxd
 
 # user-specific camera choice
 detector/settings.json

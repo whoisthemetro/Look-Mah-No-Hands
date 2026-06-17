@@ -147,7 +147,6 @@ def main() -> int:
     start = time.monotonic()
     status_interval = 1000 // config.STATUS_HZ
     last_status_ms = -10**9
-    last_list_ms = -10**9
     try:
         while True:
             # Live camera switch requested by the device dropdown.
@@ -186,11 +185,11 @@ def main() -> int:
                 if reader.last_landmarks:
                     osc.send_landmarks(reader.last_landmarks[::config.LANDMARK_STRIDE])
 
-            # Resend the camera list on request or every ~2s (so a freshly loaded
-            # device populates its dropdown).
-            if osc is not None and (control.resend or now_ms - last_list_ms >= 2000):
+            # Send the camera list only when asked (startup + the device's
+            # loadbang/manual /camera/refresh). Avoids clearing+rebuilding the
+            # device umenu every tick, which would reset the user's visible pick.
+            if osc is not None and control.resend:
                 control.resend = False
-                last_list_ms = now_ms
                 osc.send_camera_list([label for _, label in control.camera_list])
 
             if show:
