@@ -126,7 +126,12 @@ def main() -> int:
     camera_list = cameras.find_cameras()
     control = CameraControl(camera_list)
     if osc is not None:
-        start_control_server(control)
+        try:
+            start_control_server(control)
+        except OSError:
+            print(f"Another detector is already running (control port "
+                  f"{config.CONTROL_PORT} in use). Quit it first.")
+            return 1
     cur_index = args.cam
     if camera_list and cur_index not in [i for i, _ in camera_list]:
         cur_index = camera_list[0][0]  # requested cam not found; use first available

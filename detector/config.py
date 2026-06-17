@@ -4,12 +4,23 @@ Single source of truth for the OSC contract between the Python detector and the
 Max for Live device. Keep the OSC addresses here in sync with device/README.md.
 """
 
+import sys
 from pathlib import Path
 
 # --- Paths ---
+# When bundled by PyInstaller (the one-click .app), data files live under the
+# bundle's extraction dir (sys._MEIPASS), not the repo. See docs/plans/
+# 2026-06-17-01-one-click-detector-app.md.
+FROZEN = getattr(sys, "frozen", False)
 REPO_ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = REPO_ROOT / "models" / "face_landmarker.task"
-GESTURE_CONFIG = Path(__file__).resolve().parent / "gestures.json"
+
+if FROZEN:
+    _BUNDLE = Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+    MODEL_PATH = _BUNDLE / "models" / "face_landmarker.task"
+    GESTURE_CONFIG = _BUNDLE / "gestures.json"
+else:
+    MODEL_PATH = REPO_ROOT / "models" / "face_landmarker.task"
+    GESTURE_CONFIG = Path(__file__).resolve().parent / "gestures.json"
 
 # --- Camera ---
 # Defaults; overridden by settings.json (written by camera_picker.py) so each
@@ -34,7 +45,10 @@ def _load_user_settings():
         pass  # bad/edited settings file -> fall back to defaults
 
 
-_load_user_settings()
+# In the bundled app the directory is read-only and the camera is chosen live from
+# the device dropdown, so skip the per-machine settings file.
+if not FROZEN:
+    _load_user_settings()
 
 # --- OSC ports ---
 OSC_HOST = "127.0.0.1"

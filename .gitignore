@@ -19,3 +19,9 @@ device/Gestures.amxd
 
 # user-specific camera choice
 detector/settings.json
+
+# PyInstaller build artifacts (the .app ships via GitHub Releases, not git)
+build/
+dist/
+*.spec
+*.log

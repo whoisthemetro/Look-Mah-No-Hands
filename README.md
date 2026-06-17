@@ -83,6 +83,31 @@ Then load the Max device (next section) and play. The detector window shows each
 gesture's live value, threshold tick, hold progress, arm/cooldown state, and
 flashes "FIRED" on trigger.
 
+## One-click app (no Python needed)
+
+For sharing with people who don't want to touch a terminal, the detector can be
+bundled into a double-clickable macOS app. **Build it once** (needs the dev setup
+above + the model downloaded):
+
+```bash
+./build_app.sh        # → dist/LookMahNoHands-Detector.app (~270 MB, self-contained)
+```
+
+The `.app` bundles Python, mediapipe, OpenCV, the model, and `gestures.json` — a
+tester just needs the app and the Max device; **no Python, venv, or download.**
+They pick their camera from the device's dropdown inside Ableton.
+
+First-run on a tester's Mac (it's unsigned for now):
+1. **Right-click the app → Open** (Gatekeeper warns on unsigned apps; this
+   approves it once).
+2. **Allow camera access** when macOS prompts (the prompt is for the app itself).
+3. A preview window opens showing the face mesh + meters; close it / press `q` to
+   quit.
+
+> Distribute the built `.app` via a **GitHub Release** (zip it and attach) — it's
+> too big for git and isn't committed. Code-signing + notarization (to skip the
+> Gatekeeper step) is a later task; see `docs/plans/2026-06-17-01-*`.
+
 ## The Max for Live device
 
 A prebuilt **`device/LookMahNoHands.amxd`** is included. It depends on the scripts
