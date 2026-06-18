@@ -1,0 +1,85 @@
+============================================================
+ Look Mah, No Hands — install guide (macOS)
+ Hands-free Ableton transport from facial gestures.
+============================================================
+
+WHAT'S IN THIS PACKAGE
+  • LookMahNoHands-Detector.app  — the camera/gesture engine (no Python needed)
+  • device/                      — the Max for Live device + its scripts
+  • INSTALL.txt                  — this file
+
+You need: Ableton Live with Max for Live (Max 9), and a webcam.
+
+
+------------------------------------------------------------
+ STEP 1 — Install the Max for Live device
+------------------------------------------------------------
+Keep the "device" folder together — the .amxd needs the .js files
+next to it. Don't move just the .amxd out on its own.
+
+  1. Copy the whole "device" folder somewhere you'll keep it
+     (e.g. your Max for Live User Library, or just your Documents).
+  2. In Ableton, drag "device/LookMahNoHands.amxd" onto a MIDI track.
+
+
+------------------------------------------------------------
+ STEP 2 — Open the detector app (one-time approval)
+------------------------------------------------------------
+The app is not signed with an Apple Developer ID, so on the FIRST
+launch macOS will block it. This is expected. Approve it once:
+
+  1. Double-click LookMahNoHands-Detector.app.
+     macOS says it can't be opened / is from an unidentified developer.
+     Click "Done" (do NOT move it to Trash).
+
+  2. Open  System Settings → Privacy & Security.
+     Scroll down to the Security section — you'll see a line about
+     "LookMahNoHands-Detector was blocked". Click  "Open Anyway".
+
+  3. Double-click the app again and click "Open Anyway" / "Open" to
+     confirm. From now on it opens normally with a double-click.
+
+  (On macOS Sequoia the old "right-click → Open" shortcut no longer
+   works — you must use System Settings the first time, as above.)
+
+  --- Faster alternative, if you're comfortable in Terminal ---
+  Run this once and the app opens normally right away (no Settings trip):
+
+      xattr -dr com.apple.quarantine /path/to/LookMahNoHands-Detector.app
+
+  (Drag the app onto the Terminal window to fill in the path.)
+
+
+------------------------------------------------------------
+ STEP 3 — Allow camera access
+------------------------------------------------------------
+The first time the app runs, macOS asks for camera permission.
+Click "Allow". (If you miss it: System Settings → Privacy & Security
+→ Camera → turn on LookMahNoHands-Detector.)
+
+A preview window opens showing your face with a mesh + gesture meters.
+That window is your "it's running" indicator.
+
+
+------------------------------------------------------------
+ STEP 4 — Use it in Ableton
+------------------------------------------------------------
+  1. With the detector running and the device loaded in Live, pick your
+     camera from the dropdown ON THE DEVICE (in Ableton).
+  2. Try the gestures:
+        • Raise both eyebrows      → Play / Stop
+        • Tilt head RIGHT          → Record-arm
+        • Tilt head LEFT           → Undo
+  3. To quit the detector: click the preview window and press  q
+     (or just close the window).
+
+
+------------------------------------------------------------
+ TROUBLESHOOTING
+------------------------------------------------------------
+  • "App is damaged and can't be opened" → it picked up the download
+    quarantine flag. Use the Terminal one-liner in Step 2.
+  • No camera in the device dropdown → make sure the .app is running
+    first, then click the dropdown's refresh.
+  • Gestures don't fire / fire too easily → lighting and face vary per
+    person; thresholds may need tuning (ask the person who sent this).

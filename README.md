@@ -90,23 +90,29 @@ bundled into a double-clickable macOS app. **Build it once** (needs the dev setu
 above + the model downloaded):
 
 ```bash
-./build_app.sh        # → dist/LookMahNoHands-Detector.app (~270 MB, self-contained)
+./build_app.sh        # → dist/LookMahNoHands-Detector.app  +  dist/LookMahNoHands.zip
 ```
 
-The `.app` bundles Python, mediapipe, OpenCV, the model, and `gestures.json` — a
-tester just needs the app and the Max device; **no Python, venv, or download.**
-They pick their camera from the device's dropdown inside Ableton.
+This produces two things: the `.app` (~270 MB, self-contained — bundles Python,
+mediapipe, OpenCV, the model, and `gestures.json`), and **`dist/LookMahNoHands.zip`**,
+a single hand-off bundle containing the app, the `device/` folder, and `INSTALL.txt`.
+Send testers the zip; they need **no Python, venv, or download**, and pick their
+camera from the device's dropdown inside Ableton.
 
-First-run on a tester's Mac (it's unsigned for now):
-1. **Right-click the app → Open** (Gatekeeper warns on unsigned apps; this
-   approves it once).
-2. **Allow camera access** when macOS prompts (the prompt is for the app itself).
-3. A preview window opens showing the face mesh + meters; close it / press `q` to
-   quit.
+First-run on a tester's Mac (the app is **ad-hoc signed but not notarized**, so
+macOS blocks it once). Full steps are in `INSTALL.txt`; the short version:
+1. Double-click the app → macOS blocks it → click **Done** (not Trash).
+2. **System Settings → Privacy & Security → "Open Anyway"**, then open again to
+   confirm. (On macOS Sequoia the old *right-click → Open* shortcut no longer
+   works — you must use System Settings.) Terminal alternative:
+   `xattr -dr com.apple.quarantine /path/to/LookMahNoHands-Detector.app`.
+3. **Allow camera access** when prompted. A preview window opens (face mesh +
+   meters); press `q` or close it to quit.
 
-> Distribute the built `.app` via a **GitHub Release** (zip it and attach) — it's
-> too big for git and isn't committed. Code-signing + notarization (to skip the
-> Gatekeeper step) is a later task; see `docs/plans/2026-06-17-01-*`.
+> Distribute `LookMahNoHands.zip` via a **GitHub Release** (attach it) or any file
+> host — it's too big for git and isn't committed. Code-signing + notarization (to
+> skip the approval step entirely) needs a Developer ID and is a later task; see
+> `docs/plans/2026-06-17-01-*`.
 
 ## The Max for Live device
 
