@@ -31,9 +31,12 @@ fussy) → `curl` the model → run from terminal. That's the wall non-technical
 - **Keep the OpenCV preview window** as the app's visible surface: it's the
   "it's running" proof + the quit affordance (press `q` / close window). The
   in-Ableton overlay is the other view; the preview is for the standalone app.
-- **Unsigned for now.** First run needs right-click → Open (Gatekeeper) and a
-  camera-permission grant attributed to the app. Code-sign + notarize is a later
-  step so testers don't see the warning.
+- **Ad-hoc signed, not notarized.** PyInstaller ad-hoc signs the bundle (stable on
+  Apple Silicon). First run is still gated by Gatekeeper: on macOS Sequoia the old
+  *right-click → Open* shortcut is gone, so testers approve once via **System
+  Settings → Privacy & Security → "Open Anyway"** (or strip the download quarantine
+  with `xattr -dr com.apple.quarantine`). Plus a camera-permission grant attributed
+  to the app. Code-sign + notarize (Developer ID) is a later step to skip the gate.
 
 ## Work
 
